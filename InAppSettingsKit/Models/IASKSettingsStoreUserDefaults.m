@@ -25,15 +25,10 @@
 
 @implementation IASKSettingsStoreUserDefaults
 
-- (void)dealloc {
-    [_defaults release];
-    [super dealloc];
-}
-
 - (id)initWithUserDefaults:(NSUserDefaults *)defaults {
     self = [super init];
     if( self ) {
-        _defaults = [defaults retain];
+        _defaults = defaults;
     }
     return self;
 }
@@ -54,7 +49,7 @@
     [self.defaults setDouble:value forKey:key];
 }
 
-- (void)setInteger:(int)value forKey:(NSString*)key {
+- (void)setInteger:(NSInteger)value forKey:(NSString*)key {
     [self.defaults setInteger:value forKey:key];
 }
 
@@ -74,7 +69,7 @@
     return [self.defaults doubleForKey:key];
 }
 
-- (int)integerForKey:(NSString*)key {
+- (NSInteger)integerForKey:(NSString*)key {
     return [self.defaults integerForKey:key];
 }
 

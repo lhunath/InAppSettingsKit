@@ -24,7 +24,7 @@ How to include it?
 
 The source code is available on [github](http://github.com/futuretap/InAppSettingsKit). Basically you have 2 options of including InAppSettingsKit:
 
-1) you copy the `InAppSettingsKit` subfolder into your project and drag the files right into your application. InAppSettingsKitSampleApp.xcodeproj demonstrates this scenario. If your project is compiled with ARC, you'll need to disable it for the IASK files. You can do so by adding `-fno-objc-arc` in the "Compile Sources" phase. You can select all the relevant files at once with shift-click and then double-click in the Compiler Flags column to enter the text.
+1) you copy the `InAppSettingsKit` subfolder into your project and drag the files right into your application. InAppSettingsKitSampleApp.xcodeproj demonstrates this scenario. If your project is compiled without ARC, you'll need to enable it for the IASK files. You can do so by adding `-fobjc-arc` in the "Compile Sources" phase. You can select all the relevant files at once with shift-click and then double-click in the Compiler Flags column to enter the text.
 
 2) you can use the static library project to include InAppSettingsKit. To see an example on how to do it, open InAppSettingsKit.xcworkspace. It includes the sample application that uses the static library as well as the static library project itself. To include the static library project there are only a few steps necessary (the guys at [HockeyApp](http://hockeyapp.net) have a [nice tutorial](http://support.hockeyapp.net/kb/client-integration/integrate-hockeyapp-on-ios-as-a-subproject-advanced-usage) about using static libraries, just ignore the parts about the resource bundle):
 
@@ -38,11 +38,11 @@ Then you can display the InAppSettingsKit view controller using a navigation pus
 
 Depending on your project it might be needed to make some changes in the startup code of your app. Your app has to be able to reconfigure itself at runtime if the settings are changed by the user. This could be done in a `-reconfigure` method that is being called from `-applicationDidFinishLaunching` as well as in the delegate method `-settingsViewControllerDidEnd:` of `IASKAppSettingsViewController`.
 
-You may need to make two changes to your project to get it to compile: 1) Add `MessageUI.framework` and 2) disable ARC for the IASK files. Both changes can be made by finding your target and navigating to the Build Phases tab. 
+You may need to make two changes to your project to get it to compile: 1) Add `MessageUI.framework` and 2) enable ARC for the IASK files. Both changes can be made by finding your target and navigating to the Build Phases tab. 
 
 `MessageUI.framework` is needed for `MFMailComposeViewController` and can be added in the "Link Binary With Libraries" Section. Use the + icon.
 
-To disable ARC select all IASK* source files in the "Compile Sources" section, press Enter, insert `-fno-objc-arc` and then "Done".
+To enable ARC select all IASK* source files in the "Compile Sources" section, press Enter, insert `-fobjc-arc` and then "Done".
 
 
 
@@ -51,9 +51,9 @@ iCloud sync
 To sync your `NSUserDefaults` with iCloud, there's another project called [FTiCloudSync](https://github.com/futuretap/FTiCloudSync) which is implemented as a category on `NSUserDefaults`: All write and remove requests are automatically forwarded to iCloud and all updates from iCloud are automatically stored in `NSUserDefaults`. InAppSettingsKit automatically updates the UI if the standard `NSUserDefaults` based store is used.
 
 
+
 Goodies
 =======
-
 The intention of InAppSettingsKit was to create a 100% imitation of the Settings.app behavior. However, we added some bonus features for extra flexibility.
 
 
@@ -138,7 +138,10 @@ The behaviour is similar to the custom cells except that the methods get the key
 
 Custom ViewControllers
 ----------------------
-For child pane elements (`PSChildPaneSpecifier`), Apple requires a `file` key that specifies the child plist. InAppSettingsKit allow to alternatively specify `IASKViewControllerClass` and `IASKViewControllerSelector`. In this case, the child pane is displayed by instantiating a UIViewController subclass of the specified class and initializing it using the init method specified in the `IASKViewControllerSelector`. The custom view controller is then pushed onto the navigation stack. See the sample app for more details.
+For child pane elements (`PSChildPaneSpecifier`), Apple requires a `file` key that specifies the child plist. InAppSettingsKit allow to alternatively specify `IASKViewControllerClass` and `IASKViewControllerSelector`. In this case, the child pane is displayed by instantiating a UIViewController subclass of the specified class and initializing it using the init method specified in the `IASKViewControllerSelector`. The selector must have two arguments: an `NSString` argument for the file name in the Settings bundle and the `IASKSpecifier`. The custom view controller is then pushed onto the navigation stack. See the sample app for more details.
+##### Using Custom ViewControllers from StoryBoard
+Alternatively specify `IASKViewControllerStoryBoardId` to initiate a viewcontroller from [main storyboard](https://developer.apple.com/library/ios/documentation/general/conceptual/Devpedia-CocoaApp/Storyboard.html/).
+Specifiy `IASKViewControllerStoryBoardFile` to use a story board other than MainStoryboard file.
 
 
 Text alignment
